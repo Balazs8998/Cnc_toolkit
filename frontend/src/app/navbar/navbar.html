@@ -1,0 +1,77 @@
+<nav class="navbar">
+  <div class="navbar__container">
+    <a
+      class="navbar__brand"
+      routerLink="/home"
+      (click)="closeMenu()"
+    >
+      <span class="navbar__brand-mark">CNC</span>
+      <span class="navbar__brand-name">Toolkit</span>
+    </a>
+
+    <button
+      class="navbar__toggle"
+      type="button"
+      aria-label="Toggle navigation"
+      [attr.aria-expanded]="menuOpen()"
+      aria-controls="main-navigation"
+      (click)="toggleMenu()"
+    >
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <div
+      id="main-navigation"
+      class="navbar__menu"
+      [class.navbar__menu--open]="menuOpen()"
+    >
+      <a
+        class="navbar__link"
+        routerLink="/home"
+        routerLinkActive="navbar__link--active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        (click)="closeMenu()"
+      >
+        Home
+      </a>
+
+      <a
+        class="navbar__link"
+        routerLink="/simulator"
+        routerLinkActive="navbar__link--active"
+        (click)="closeMenu()"
+      >
+        Simulator
+      </a>
+
+      <a
+        class="navbar__link"
+        routerLink="/chipbreak"
+        routerLinkActive="navbar__link--active"
+        (click)="closeMenu()"
+      >
+        Chipbreak
+      </a>
+
+      <a
+        class="navbar__link"
+        routerLink="/geometry"
+        routerLinkActive="navbar__link--active"
+        (click)="closeMenu()"
+      >
+        Geometry
+      </a>
+
+      <a
+        class="navbar__link"
+        routerLink="/cutting-data"
+        routerLinkActive="navbar__link--active"
+        (click)="closeMenu()"
+      >
+        Cutting Data
+      </a>
+    </div>
+  </div>
+</nav>

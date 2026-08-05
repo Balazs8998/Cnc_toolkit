@@ -1,0 +1,53 @@
+<header class="panel-header">
+  <div>
+    <span class="panel-header__label">NC program</span>
+    <h2>Program editor</h2>
+  </div>
+
+  <span class="panel-status">
+          <span class="panel-status__light"></span>
+          Ready
+        </span>
+</header>
+
+  <form
+    class="editor-form"
+    [formGroup]="programEditorForm"
+    (ngSubmit)="submitProgram()"
+  >
+<div class="program-file">
+  <span>PROGRAM_01.NC</span>
+  <span>FANUC</span>
+</div>
+
+<label class="sr-only" for="cnc-program">
+  CNC program
+</label>
+
+<section class="editor-panel">
+    <textarea
+      class="program-input"
+      formControlName="cncProgram"
+      rows="25"
+      placeholder="Írd be a CNC-programot"
+    ></textarea>
+
+</section>
+
+
+
+<footer class="editor-footer">
+  <span>Lines: 8</span>
+  <span>Encoding: UTF-8</span>
+</footer>
+
+<div class="program-actions">
+  <button class="button button--secondary" type="button">
+    Clear
+  </button>
+
+  <button class="button button--primary" type="submit">
+    Parse program
+  </button>
+</div>
+  </form>

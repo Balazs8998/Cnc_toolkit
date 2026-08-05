@@ -1,0 +1,170 @@
+<main class="simulator-page">
+  <header class="simulator-header">
+    <div>
+      <p class="simulator-header__eyebrow">CNC Toolkit</p>
+      <h1>CNC Simulator</h1>
+      <p class="simulator-header__description">
+        Enter a CNC program and visualize the tool movement in the X–Z plane.
+      </p>
+    </div>
+
+    <div class="machine-badge">
+      <span class="machine-badge__light"></span>
+
+      <div>
+        <span class="machine-badge__label">Machine mode</span>
+        <strong>Turning / X–Z</strong>
+      </div>
+    </div>
+  </header>
+
+  <section class="simulator-layout">
+    <!-- G-code editor -->
+
+    <aside class="program-panel">
+
+      <app-code-editor (programSubmitted)="loadProgram($event)"></app-code-editor>
+    </aside>
+
+    <!-- Simulator -->
+
+    <section class="machine-panel">
+      <header class="panel-header">
+        <div>
+          <span class="panel-header__label">Simulation</span>
+          <h2>Tool path</h2>
+        </div>
+
+        <div class="simulation-mode">
+          <span>Mode</span>
+          <strong>Automatic</strong>
+        </div>
+      </header>
+
+      <div class="machine-toolbar">
+        <div class="playback-controls">
+          <button
+            class="control-button control-button--primary"
+            type="button"
+            aria-label="Start simulation"
+            title="Start simulation"
+          >
+            ▶
+          </button>
+
+          <button
+            class="control-button"
+            type="button"
+            aria-label="Pause simulation"
+            title="Pause simulation"
+          >
+            ‖
+          </button>
+
+          <button
+            class="control-button"
+            type="button"
+            aria-label="Stop simulation"
+            title="Stop simulation"
+          >
+            ■
+          </button>
+
+          <button
+            class="control-button"
+            type="button"
+            aria-label="Reset simulation"
+            title="Reset simulation"
+          >
+            ↺
+          </button>
+        </div>
+
+        <div class="speed-control">
+          <label for="simulation-speed">Speed</label>
+
+          <select id="simulation-speed" name="simulation-speed">
+            <option value="0.25">0.25×</option>
+            <option value="0.5">0.5×</option>
+            <option value="1" selected>1×</option>
+            <option value="2">2×</option>
+            <option value="5">5×</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="canvas-frame">
+        <div class="canvas-frame__top">
+          <span>WORK AREA</span>
+          <span>UNIT: MM</span>
+        </div>
+
+        <div class="canvas-container">
+          <section class="canvas-panel">
+            <app-canvas-view />
+          </section>
+
+      </div>
+
+      <div class="progress-section">
+        <div class="progress-section__info">
+          <span>Program progress</span>
+          <strong>0%</strong>
+        </div>
+
+        <div
+          class="progress-track"
+          role="progressbar"
+          aria-label="Simulation progress"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          aria-valuenow="0"
+        >
+          <div class="progress-track__value"></div>
+        </div>
+      </div>
+
+      <div class="machine-data">
+        <article class="data-card">
+          <span class="data-card__label">Position X</span>
+          <strong>
+            0.000
+            <small>mm</small>
+          </strong>
+        </article>
+
+        <article class="data-card">
+          <span class="data-card__label">Position Z</span>
+          <strong>
+            0.000
+            <small>mm</small>
+          </strong>
+        </article>
+
+        <article class="data-card">
+          <span class="data-card__label">Active motion</span>
+          <strong class="data-card__accent">G00</strong>
+        </article>
+
+        <article class="data-card">
+          <span class="data-card__label">Feed rate</span>
+          <strong>
+            0.000
+            <small>mm/rev</small>
+          </strong>
+        </article>
+
+        <article class="data-card">
+          <span class="data-card__label">Program line</span>
+          <strong>N000</strong>
+        </article>
+
+        <article class="data-card">
+          <span class="data-card__label">Status</span>
+          <strong class="data-card__status">Waiting</strong>
+        </article>
+      </div>
+      </div>
+    </section>
+  </section>
+</main>

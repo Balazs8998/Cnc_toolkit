@@ -1,0 +1,50 @@
+<main class="not-found">
+  <section class="alarm-panel" aria-labelledby="not-found-title">
+    <div class="alarm-panel__top">
+      <span class="status-light" aria-hidden="true"></span>
+      <span class="machine-label">CNC TOOLKIT / SYSTEM ALARM</span>
+      <span class="alarm-code">N404</span>
+    </div>
+
+    <div class="alarm-panel__screen">
+      <div class="coordinate-grid" aria-hidden="true">
+        <span>X&nbsp;&nbsp;---</span>
+        <span>Z&nbsp;&nbsp;---</span>
+        <span>F&nbsp;&nbsp;0.000</span>
+      </div>
+
+      <div class="error-code" aria-hidden="true">
+        <span>4</span>
+        <span class="error-code__tool">Ø</span>
+        <span>4</span>
+      </div>
+
+      <p class="alarm-name">ALARM: PROGRAM BLOCK NOT FOUND</p>
+
+      <h1 id="not-found-title">This route does not exist</h1>
+
+      <p class="description">
+        The requested page could not be located in the current CNC program.
+        Check the address or return to the main menu.
+      </p>
+
+      <div class="program-preview" aria-label="CNC error preview">
+        <span class="program-line-number">N404</span>
+        <span class="program-command">GOTO</span>
+        <span class="program-error">UNKNOWN_ROUTE</span>
+        <span class="cursor" aria-hidden="true"></span>
+      </div>
+
+      <a class="home-button" routerLink="/main-menu"
+         routerLink="/home">
+        <span class="home-button__icon" aria-hidden="true">↩</span>
+        Return to main menu
+      </a>
+    </div>
+
+    <div class="alarm-panel__footer">
+      <span>MODE: RECOVERY</span>
+      <span>STATUS: WAITING</span>
+    </div>
+  </section>
+</main>
