@@ -4,11 +4,23 @@
     <h2>Program editor</h2>
   </div>
 
-  <span class="panel-status">
-          <span class="panel-status__light"></span>
-          Ready
-        </span>
+  <button
+    class="stock-setup-button"
+    type="button"
+    (click)="toggleStockSetup()"
+  >
+    Stock Setup
+  </button>
+
+  @if (isStockSetupOpen()) {
+    <section class="stock-setup-panel">
+      <app-stock-setup></app-stock-setup>
+    </section>
+  }
+
 </header>
+
+
 
   <form
     class="editor-form"
@@ -16,8 +28,24 @@
     (ngSubmit)="submitProgram()"
   >
 <div class="program-file">
-  <span>PROGRAM_01.NC</span>
-  <span>FANUC</span>
+  <div class="select-group">
+    <label for="machine">Machine</label>
+    <select id="machine">
+      <option value="">Select machine...</option>
+      <option value="citizen-l12">Citizen L12</option>
+      <option value="citizen-l32">Citizen L32</option>
+    </select>
+  </div>
+
+  <div class="select-group">
+    <label for="control">CNC Control</label>
+
+    <select id="control">
+      <option value="">Select control...</option>
+      <option value="fanuc-0i-td">Fanuc 0i-TD</option>
+      <option value="sinumerik">Siemens Sinumerik</option>
+    </select>
+  </div>
 </div>
 
 <label class="sr-only" for="cnc-program">

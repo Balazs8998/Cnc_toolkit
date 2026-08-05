@@ -1,7 +1,151 @@
-<canvas
-  #cncCanvas
-  width="900"
-  height="600"
->
-  A böngésződ nem támogatja a Canvas API-t.
-</canvas>
+<section class="monitor-panel">
+  <header class="monitor-header">
+    <div>
+      <span class="monitor-header__label">Simulation</span>
+      <h2>CNC monitor</h2>
+    </div>
+
+    <div class="monitor-mode">
+      <span>Mode</span>
+      <strong>Automatic</strong>
+    </div>
+  </header>
+
+  <nav class="machine-toolbar" aria-label="Simulation controls">
+    <button class="machine-control machine-control--start" type="button">
+      <span class="machine-control__icon">▶</span>
+      <span>Cycle Start</span>
+    </button>
+
+    <button class="machine-control machine-control--pause" type="button">
+      <span class="machine-control__icon">Ⅱ</span>
+      <span>Pause</span>
+    </button>
+
+    <button class="machine-control machine-control--stop" type="button">
+      <span class="machine-control__icon">■</span>
+      <span>Stop</span>
+    </button>
+
+    <button class="machine-control machine-control--reset" type="button">
+      <span class="machine-control__icon">↻</span>
+      <span>Reset</span>
+    </button>
+
+    <div
+      class="machine-state machine-state--ready"
+      role="status"
+      aria-live="polite"
+    >
+      <span class="machine-state__light"></span>
+      <span class="machine-state__text">Ready</span>
+    </div>
+
+  </nav>
+
+  <div class="monitor-body">
+    <section class="canvas-display">
+      <header class="canvas-display__header">
+        <span>Work area</span>
+        <span>Unit: mm</span>
+      </header>
+
+      <div class="canvas-display__viewport">
+        <canvas #cncCanvas width="900" height="600">
+          A böngésződ nem támogatja a Canvas API-t.
+        </canvas>
+      </div>
+    </section>
+
+    <aside class="machine-telemetry">
+      <article class="telemetry-card telemetry-card--axis">
+        <span class="telemetry-card__title">X axis</span>
+
+        <div class="axis-values">
+          <div class="axis-value">
+            <span>Position</span>
+            <strong>0.000 <small>mm</small></strong>
+          </div>
+
+          <div class="axis-value">
+            <span>Distance to go</span>
+            <strong>0.000 <small>mm</small></strong>
+          </div>
+        </div>
+      </article>
+
+      <article class="telemetry-card telemetry-card--axis">
+        <span class="telemetry-card__title">Z axis</span>
+
+        <div class="axis-values">
+          <div class="axis-value">
+            <span>Position</span>
+            <strong>0.000 <small>mm</small></strong>
+          </div>
+
+          <div class="axis-value">
+            <span>Distance to go</span>
+            <strong>0.000 <small>mm</small></strong>
+          </div>
+        </div>
+      </article>
+      <article class="telemetry-card telemetry-card--codes">
+        <span>Active G codes</span>
+
+        <div class="code-values">
+          <strong>G00</strong>
+          <strong>G90</strong>
+          <strong>G95</strong>
+        </div>
+      </article>
+
+      <article class="telemetry-card telemetry-card--codes">
+        <span>Active M codes</span>
+
+        <div class="code-values">
+          <strong>M03</strong>
+          <strong>M08</strong>
+        </div>
+      </article>
+
+      <article class="telemetry-card telemetry-card--process">
+        <div class="process-value">
+          <span>Feed rate</span>
+          <strong>
+            0.000
+            <small>mm/rev</small>
+          </strong>
+        </div>
+
+        <div class="process-value">
+          <span>Spindle speed</span>
+          <strong>
+            12000
+            <small>rpm</small>
+          </strong>
+        </div>
+      </article>
+
+      <article class="telemetry-card telemetry-card--compact">
+        <span>Program line</span>
+        <strong>N000</strong>
+      </article>
+
+      <article class="telemetry-card telemetry-card--compact">
+        <span>Status</span>
+        <strong class="telemetry-card__status">Waiting</strong>
+      </article>
+    </aside>
+  </div>
+
+  <footer class="program-progress">
+    <div class="program-progress__header">
+      <span>Program progress</span>
+      <strong>0%</strong>
+    </div>
+
+    <div class="program-progress__track">
+      <div class="program-progress__value"></div>
+    </div>
+  </footer>
+</section>

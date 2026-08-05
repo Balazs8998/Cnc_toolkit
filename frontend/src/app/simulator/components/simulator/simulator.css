@@ -1,495 +1,134 @@
-/* ===================================================================
-   CNC Simulator + Program Editor
-   A meglévő stílus tokenjei alapján kiterjesztve
-   =================================================================== */
-
 :host {
   display: block;
-  padding: 24px;
-  background-color: #11191c;
+  min-height: 100vh;
+
+  color: #dce7e9;
+  background:
+    radial-gradient(
+      circle at 70% 20%,
+      rgba(30, 104, 103, 0.08),
+      transparent 38%
+    ),
+    #071014;
 }
 
-/* -------------------------------------------------------------------
-   Header
-   ------------------------------------------------------------------- */
+.simulator-page {
+  width: min(calc(100% - 32px), 1600px);
+  margin-inline: auto;
+  padding-block: 20px 32px;
+}
 
 .simulator-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  gap: 32px;
+  justify-content: space-between;
+  gap: 24px;
 
-  margin-bottom: 24px;
-  padding: 24px 28px;
+  margin-bottom: 18px;
+  padding: 18px 24px;
 
-  background:
-    linear-gradient(
-      135deg,
-      rgba(34, 178, 164, 0.12),
-      rgba(9, 16, 20, 0.4)
-    ),
-    #11191c;
-
-  border: 1px solid #294044;
-  border-radius: 8px;
+  background-color: #101a1d;
+  border: 1px solid #294047;
+  border-radius: 6px;
 }
 
-.simulator-header__eyebrow {
-  margin: 0 0 6px;
-
-  color: #32b8a8;
-
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+.simulator-header__content {
+  min-width: 0;
 }
 
 .simulator-header h1 {
   margin: 0;
 
-  color: #eef6f7;
+  color: #edf4f5;
 
-  font-size: clamp(28px, 4vw, 42px);
+  font-size: clamp(26px, 3vw, 34px);
   line-height: 1.1;
 }
 
 .simulator-header__description {
-  max-width: 650px;
-  margin: 10px 0 0;
+  margin: 8px 0 0;
 
-  color: #9db0b4;
+  color: #91a6aa;
 
-  font-size: 15px;
-  line-height: 1.6;
+  font-size: 14px;
+  line-height: 1.5;
 }
 
 .machine-badge {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 11px;
+  flex: 0 0 auto;
 
-  min-width: 190px;
-  padding: 12px 16px;
+  min-width: 180px;
+  padding: 10px 14px;
 
-  background-color: #091014;
-  border: 1px solid #385156;
-  border-radius: 6px;
+  background-color: #091216;
+  border: 1px solid #314a50;
+  border-radius: 5px;
 }
 
 .machine-badge__light {
-  width: 10px;
-  height: 10px;
-  flex-shrink: 0;
+  width: 9px;
+  height: 9px;
 
-  background-color: #36d399;
+  background-color: #2fd39a;
   border-radius: 50%;
-
-  box-shadow: 0 0 10px rgba(54, 211, 153, 0.8);
 }
 
 .machine-badge__label {
   display: block;
-  margin-bottom: 3px;
+  margin-bottom: 2px;
 
-  color: #71868a;
+  color: #71898e;
 
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.machine-badge strong {
-  color: #d8e2e4;
-
-  font-size: 14px;
-  font-weight: 600;
-}
-
-/* -------------------------------------------------------------------
-   Layout
-   ------------------------------------------------------------------- */
-
-.simulator-layout {
-  display: grid;
-  grid-template-columns: minmax(260px, 320px) minmax(0, 1fr);
-  gap: 24px;
-  align-items: start;
-}
-
-.program-panel,
-.machine-panel {
-  padding: 16px;
-  background-color: #11191c;
-  border: 1px solid #294044;
-  border-radius: 6px;
-}
-
-/* -------------------------------------------------------------------
-   Panel header (used by both editor and simulator panels)
-   ------------------------------------------------------------------- */
-
-.panel-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 16px;
-
-  margin-bottom: 16px;
-  padding-bottom: 16px;
-
-  border-bottom: 1px solid #294044;
-}
-
-.panel-header__label {
-  display: block;
-  margin-bottom: 4px;
-
-  color: #71868a;
-
-  font-size: 11px;
-  font-weight: 700;
+  font-size: 10px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
-.panel-header h2 {
-  margin: 0;
-
-  color: #eef6f7;
-
-  font-size: 18px;
-  font-weight: 600;
-}
-
-.panel-status {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-
-  color: #9db0b4;
-
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
-.panel-status__light {
-  width: 8px;
-  height: 8px;
-  flex-shrink: 0;
-
-  background-color: #36d399;
-  border-radius: 50%;
-
-  box-shadow: 0 0 8px rgba(54, 211, 153, 0.8);
-}
-
-.simulation-mode {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 2px;
-
-  font-size: 12px;
-  white-space: nowrap;
-}
-
-.simulation-mode span {
-  color: #71868a;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.simulation-mode strong {
-  color: #32b8a8;
-  font-weight: 600;
-}
-
-/* -------------------------------------------------------------------
-   Simulator toolbar
-   ------------------------------------------------------------------- */
-
-.machine-toolbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-
-  margin-bottom: 16px;
-}
-
-.playback-controls {
-  display: flex;
-  gap: 8px;
-}
-
-.control-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  width: 36px;
-  height: 36px;
-
-  background-color: #091014;
-  border: 1px solid #385156;
-  border-radius: 6px;
-
-  color: #9db0b4;
+.machine-badge strong {
+  color: #dbe6e8;
 
   font-size: 14px;
-  line-height: 1;
-
-  cursor: pointer;
-  transition: border-color 0.15s ease, color 0.15s ease;
-}
-
-.control-button:hover {
-  border-color: #32b8a8;
-  color: #eef6f7;
-}
-
-.control-button--primary {
-  background-color: #32b8a8;
-  border-color: #32b8a8;
-
-  color: #091014;
-}
-
-.control-button--primary:hover {
-  background-color: #3ccdbb;
-  border-color: #3ccdbb;
-  color: #091014;
-}
-
-.speed-control {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.speed-control label {
-  color: #71868a;
-
-  font-size: 12px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-.speed-control select {
-  padding: 6px 10px;
-
-  background-color: #091014;
-  border: 1px solid #385156;
-  border-radius: 4px;
-
-  color: #d8e2e4;
-
-  font-family: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
-  font-size: 12px;
-
-  cursor: pointer;
-}
-
-.speed-control select:focus {
-  outline: none;
-  border-color: #32b8a8;
-}
-
-/* -------------------------------------------------------------------
-   Canvas frame
-   ------------------------------------------------------------------- */
-
-.canvas-frame {
-  margin-bottom: 16px;
-
-  background-color: #091014;
-  border: 1px solid #294044;
-  border-radius: 6px;
-
-  overflow: hidden;
-}
-
-.canvas-frame__top {
-  display: flex;
-  justify-content: space-between;
-
-  padding: 8px 14px;
-
-  background-color: #0d151a;
-  border-bottom: 1px solid #294044;
-
-  color: #4c5f63;
-
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-}
-
-.canvas-container {
-  padding: 16px;
-}
-
-.canvas-panel {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  min-height: 360px;
-  padding: 16px;
-
-  background-color: #11191c;
-  border: 1px solid #294044;
-  border-radius: 6px;
-}
-
-/* -------------------------------------------------------------------
-   Progress
-   ------------------------------------------------------------------- */
-
-.progress-section {
-  margin-bottom: 16px;
-}
-
-.progress-section__info {
-  display: flex;
-  justify-content: space-between;
-
-  margin-bottom: 6px;
-
-  font-size: 12px;
-}
-
-.progress-section__info span {
-  color: #71868a;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-.progress-section__info strong {
-  color: #32b8a8;
   font-weight: 600;
 }
 
-.progress-track {
-  height: 6px;
-
-  background-color: #091014;
-  border: 1px solid #294044;
-  border-radius: 999px;
-
-  overflow: hidden;
-}
-
-.progress-track__value {
-  height: 100%;
-  width: 0%;
-
-  background: linear-gradient(90deg, #32b8a8, #36d399);
-  border-radius: 999px;
-
-  transition: width 0.2s ease;
-}
-
-/* -------------------------------------------------------------------
-   Machine data cards
-   ------------------------------------------------------------------- */
-
-.machine-data {
+.simulator-workspace {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
+  grid-template-columns: minmax(340px, 370px) minmax(0, 1fr);
+  gap: 18px;
+  align-items: stretch;
 }
 
-.data-card {
-  padding: 12px 14px;
-
-  background-color: #091014;
-  border: 1px solid #294044;
-  border-radius: 6px;
+.simulator-workspace__editor,
+.simulator-workspace__monitor {
+  min-width: 0;
 }
 
-.data-card__label {
-  display: block;
-  margin-bottom: 6px;
+@media (max-width: 1180px) {
+  .simulator-page {
+    width: min(calc(100% - 20px), 1600px);
+  }
 
-  color: #71868a;
-
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.data-card strong {
-  display: flex;
-  align-items: baseline;
-  gap: 4px;
-
-  color: #d8e2e4;
-
-  font-family: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
-  font-size: 18px;
-  font-weight: 600;
-}
-
-.data-card strong small {
-  color: #71868a;
-
-  font-family: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
-  font-size: 11px;
-  font-weight: 500;
-}
-
-.data-card__accent {
-  color: #32b8a8 !important;
-}
-
-.data-card__status {
-  color: #e8b94f !important;
-}
-
-/* -------------------------------------------------------------------
-   Responsive
-   ------------------------------------------------------------------- */
-
-@media (max-width: 900px) {
-  .simulator-layout {
+  .simulator-workspace {
     grid-template-columns: 1fr;
   }
 
-  .machine-data {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .simulator-workspace__editor,
+  .simulator-workspace__monitor {
+    width: 100%;
   }
 }
 
-@media (max-width: 750px) {
+@media (max-width: 620px) {
   .simulator-header {
     flex-direction: column;
-    align-items: stretch;
-
-    padding: 20px;
+    padding: 16px;
   }
 
   .machine-badge {
-    min-width: 0;
-  }
-
-  .machine-toolbar {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .speed-control {
-    justify-content: space-between;
-  }
-}
-
-@media (max-width: 480px) {
-  .machine-data {
-    grid-template-columns: 1fr 1fr;
+    width: 100%;
+    box-sizing: border-box;
   }
 }

@@ -1,0 +1,100 @@
+.stock-setup-panel {
+  display: none;
+  padding: 11px;
+
+  background-color: #0b171a;
+  border: 1px solid #2b484e;
+  border-radius: 5px;
+}
+
+.stock-setup-panel--open {
+  display: block;
+}
+
+.stock-setup-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+
+  border-bottom: 1px solid #243b40;
+}
+
+.stock-setup-panel__header span {
+  display: block;
+
+  color: #71898e;
+  font-size: 9px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.stock-setup-panel__header strong {
+  display: block;
+  margin-top: 2px;
+
+  color: #dce7e9;
+  font-size: 12px;
+}
+
+.stock-setup-panel__direction {
+  color: #32b8a8 !important;
+  white-space: nowrap;
+}
+
+.stock-setup-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
+}
+
+.stock-field {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.stock-field > span {
+  color: #7c9297;
+  font-size: 9px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.stock-field__control {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+
+  background-color: #071014;
+  border: 1px solid #304a50;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.stock-field__control input {
+  width: 100%;
+  min-width: 0;
+  padding: 6px 8px;
+
+  color: #e1ebed;
+  background: transparent;
+  border: 0;
+  outline: 0;
+
+  font-family: monospace;
+}
+
+.stock-field__control > span {
+  padding: 0 7px;
+
+  color: #60787d;
+  font-size: 9px;
+}
+
+.stock-field__control:focus-within {
+  border-color: #32b8a8;
+}
