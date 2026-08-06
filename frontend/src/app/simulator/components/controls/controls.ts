@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { SimulationService } from '../../services/simulation.service';
 
 @Component({
   selector: 'app-controls',
@@ -6,4 +7,22 @@ import { Component } from '@angular/core';
   templateUrl: './controls.html',
   styleUrl: './controls.css',
 })
-export class Controls {}
+export class Controls {
+  protected readonly simulation = inject(SimulationService);
+
+  start(): void {
+    this.simulation.start();
+  }
+
+  pause(): void {
+    this.simulation.pause();
+  }
+
+  stop(): void {
+    this.simulation.stop();
+  }
+
+  reset(): void {
+    this.simulation.reset();
+  }
+}

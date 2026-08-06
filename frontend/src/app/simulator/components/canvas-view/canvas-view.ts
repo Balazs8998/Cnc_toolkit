@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import { CanvasRendererService } from '../../services/canvas-renderer.service';
 import { SimulationService } from '../../services/simulation.service';
+import { Controls } from '../controls/controls';
 
 @Component({
   selector: 'app-canvas-view',
@@ -16,9 +17,9 @@ import { SimulationService } from '../../services/simulation.service';
   templateUrl: './canvas-view.html',
   styleUrl: './canvas-view.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [Controls],
 })
 export class CanvasView {
-
   private readonly renderer = inject(CanvasRendererService);
   private readonly simulation = inject(SimulationService);
 
@@ -35,11 +36,14 @@ export class CanvasView {
 
     afterRenderEffect({
       write: () => {
-        const codeLines = this.simulation.codeLines();
+        const completedMovements = this.simulation.completedMovements();
 
-        this.renderer.drawProgram(codeLines);
-      }
-    })
+        const startPosition = this.simulation.movementStartPosition();
 
+        const currentPosition = this.simulation.currentPosition();
+
+        this.renderer.drawMovementFrame(completedMovements, startPosition, currentPosition);
+      },
+    });
   }
 }

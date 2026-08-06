@@ -13,21 +13,26 @@
     </span>
   </header>
 
+  <form [formGroup]="stockSetupForm" (ngSubmit)="submitStockSetup()">
   <div class="stock-setup-grid">
     <label class="stock-field">
       <span>Diameter</span>
 
       <div class="stock-field__control">
-        <input type="number" min="0" step="0.001" value="20">
+        <input
+          formControlName="diameter"
+          type="number" min="0" >
         <span>mm</span>
       </div>
     </label>
 
     <label class="stock-field">
-      <span>Length</span>
+      <span>Work length</span>
 
       <div class="stock-field__control">
-        <input type="number" min="0" step="0.001" value="60">
+        <input
+          formControlName="workLength"
+          type="number" min="0" >
         <span>mm</span>
       </div>
     </label>
@@ -36,7 +41,12 @@
       <span>Radial clearance</span>
 
       <div class="stock-field__control">
-        <input type="number" min="0" step="0.001" value="2">
+        <input
+          formControlName="radialClearance"
+          type="number"
+          min="0"
+
+        />
         <span>mm</span>
       </div>
     </label>
@@ -45,9 +55,25 @@
       <span>Z clearance</span>
 
       <div class="stock-field__control">
-        <input type="number" min="0" step="0.001" value="5">
+        <input
+          formControlName="axialClearance"
+          type="number"
+          min="0"
+          step="0.5"
+        />
         <span>mm</span>
       </div>
     </label>
   </div>
+    <div class="stock-setup-actions">
+      <button
+        [disabled]="stockSetupForm.invalid"
+        class="stock-setup-actions__save"
+        type="submit"
+      >
+        Save setup
+      </button>
+    </div>
+
+  </form>
 </section>

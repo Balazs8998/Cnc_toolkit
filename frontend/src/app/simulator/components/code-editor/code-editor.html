@@ -14,7 +14,7 @@
 
   @if (isStockSetupOpen()) {
     <section class="stock-setup-panel">
-      <app-stock-setup></app-stock-setup>
+      <app-stock-setup (closeStockSetup)="toggleStockSetup()" ></app-stock-setup>
     </section>
   }
 
@@ -65,16 +65,18 @@
 
 
 <footer class="editor-footer">
-  <span>Lines: 8</span>
   <span>Encoding: UTF-8</span>
 </footer>
 
 <div class="program-actions">
-  <button class="button button--secondary" type="button">
+  <button
+    (click)="clearEditor()"
+    class="button button--secondary" type="button">
     Clear
   </button>
 
-  <button class="button button--primary" type="submit">
+  <button
+    class="button button--primary" type="submit">
     Parse program
   </button>
 </div>

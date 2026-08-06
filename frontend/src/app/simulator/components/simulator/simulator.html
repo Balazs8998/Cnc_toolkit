@@ -24,10 +24,17 @@
   </header>
 
   <div class="simulator-workspace">
+
     <aside class="simulator-workspace__editor">
-      <app-code-editor
-        (programSubmitted)="loadProgram($event)"
-      />
+      @if (activeView() === 'editor') {
+        <app-code-editor
+          (programSubmitted)="loadProgram($event)"
+        />
+      } @else {
+        <app-program-runner
+          (editRequested)="openEditor()"
+        />
+      }
     </aside>
 
     <main class="simulator-workspace__monitor">

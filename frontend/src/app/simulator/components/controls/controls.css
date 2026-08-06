@@ -1,0 +1,265 @@
+:host {
+  display: block;
+  margin-bottom: 12px;
+}
+
+/* ─────────────────────────────────────────────
+   Vezérlősáv
+   ───────────────────────────────────────────── */
+
+.machine-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 9px 10px;
+
+  background-color: #091216;
+  border: 1px solid #294047;
+  border-radius: 5px;
+}
+
+/* ─────────────────────────────────────────────
+   Vezérlőgombok
+   ───────────────────────────────────────────── */
+
+.machine-control {
+  display: inline-grid;
+  grid-template-columns: 30px auto;
+  align-items: center;
+  gap: 8px;
+
+  min-width: 122px;
+  min-height: 42px;
+  padding: 5px 11px 5px 6px;
+
+  color: #cbd9dc;
+  background-color: #131f23;
+
+  border: 1px solid #314a50;
+  border-bottom-color: #1d3035;
+  border-radius: 4px;
+
+  cursor: pointer;
+
+  font: inherit;
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.035),
+    0 2px 3px rgba(0, 0, 0, 0.25);
+
+  transition:
+    border-color 120ms ease,
+    background-color 120ms ease,
+    transform 80ms ease;
+}
+
+.machine-control__icon {
+  display: grid;
+  place-items: center;
+
+  width: 30px;
+  height: 30px;
+
+  background-color: #091216;
+  border: 1px solid currentColor;
+  border-radius: 3px;
+
+  font-size: 13px;
+  line-height: 1;
+}
+
+.machine-control--start {
+  color: #42d6a4;
+}
+
+.machine-control--pause {
+  color: #e7b84c;
+}
+
+.machine-control--stop {
+  color: #e26b6b;
+}
+
+.machine-control--reset {
+  color: #91aeb5;
+}
+
+.machine-control:hover {
+  background-color: #19292e;
+  border-color: currentColor;
+}
+
+.machine-control:active {
+  transform: translateY(1px);
+
+  background-color: #0d181c;
+
+  box-shadow:
+    inset 0 2px 4px rgba(0, 0, 0, 0.35);
+}
+
+.machine-control:focus-visible {
+  outline: 2px solid #32b8a8;
+  outline-offset: 2px;
+}
+
+.machine-control--active:not(:disabled) {
+  background-color: #1b2d31;
+  border-color: currentColor;
+
+  box-shadow:
+    inset 0 0 0 1px currentColor,
+    inset 0 0 12px rgba(255, 255, 255, 0.04),
+    0 0 8px rgba(50, 184, 168, 0.14);
+}
+
+.machine-control--active:not(:disabled) .machine-control__icon {
+  background-color: currentColor;
+  color: #071014;
+
+  box-shadow:
+    0 0 8px currentColor;
+}
+
+.machine-control:disabled {
+  color: #53676c;
+  background-color: #0d171a;
+
+  border-color: #24373c;
+  border-bottom-color: #1a292d;
+
+  cursor: not-allowed;
+  opacity: 0.55;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.015);
+
+  transform: none;
+}
+
+.machine-control:disabled .machine-control__icon {
+  color: #4d6065;
+  background-color: #091216;
+  border-color: #2a3b40;
+
+  box-shadow: none;
+}
+
+.machine-control:disabled:hover,
+.machine-control:disabled:active {
+  color: #53676c;
+  background-color: #0d171a;
+
+  border-color: #24373c;
+  border-bottom-color: #1a292d;
+
+  transform: none;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.015);
+}
+
+/* ─────────────────────────────────────────────
+   Szimuláció állapotjelző
+   ───────────────────────────────────────────── */
+
+.machine-state {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  margin-left: auto;
+  min-width: 88px;
+  padding: 8px 12px;
+
+  color: #cbd9dc;
+  background-color: #101a1d;
+
+  border: 1px solid #314a50;
+  border-radius: 999px;
+
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.machine-state__light {
+  width: 8px;
+  height: 8px;
+  flex: 0 0 auto;
+
+  background-color: currentColor;
+  border-radius: 50%;
+}
+
+.machine-state__text {
+  color: inherit;
+}
+
+.machine-state--ready {
+  color: #2fd39a;
+  border-color: rgba(47, 211, 154, 0.45);
+}
+
+.machine-state--running {
+  color: #42d6a4;
+  border-color: rgba(66, 214, 164, 0.55);
+}
+
+.machine-state--paused {
+  color: #e7b84c;
+  border-color: rgba(231, 184, 76, 0.55);
+}
+
+.machine-state--stopped {
+  color: #ef7a7a;
+  border-color: rgba(239, 122, 122, 0.55);
+}
+
+.machine-state--error {
+  color: #c94444;
+  background-color: rgba(115, 24, 24, 0.18);
+  border-color: rgba(201, 68, 68, 0.7);
+}
+
+/* ─────────────────────────────────────────────
+   Tablet
+   ───────────────────────────────────────────── */
+
+@media (max-width: 900px) {
+  .machine-toolbar {
+    flex-wrap: wrap;
+  }
+}
+
+/* ─────────────────────────────────────────────
+   Mobil
+   ───────────────────────────────────────────── */
+
+@media (max-width: 620px) {
+  .machine-toolbar {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .machine-control {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .machine-state {
+    grid-column: 1 / -1;
+
+    width: 100%;
+    margin-left: 0;
+    box-sizing: border-box;
+    justify-content: center;
+  }
+}

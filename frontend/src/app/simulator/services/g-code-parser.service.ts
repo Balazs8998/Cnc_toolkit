@@ -3,19 +3,28 @@ import { CodeLine } from '../models/simulator-models/swiss-lateh-machine/codeLin
 
 @Service()
 export class GCodeParserService {
-
   parseProgram(program: string): CodeLine[] {
-    const lines = program.split(/\r?\n/);
-
-    return lines.filter((line) => line.trim().length > 0).map((line) => this.parseBlock(line));
+    return program
+      .split(/\r?\n/)
+      .map((line, index) => ({
+        line,
+        fileLineNumber: index + 1,
+      }))
+      .filter(({ line }) => line.trim().length > 0)
+      .map(({ line, fileLineNumber }) => this.parseBlock(line, fileLineNumber));
   }
 
-  private parseBlock(line: string): CodeLine {
-    const codeBlocks = line.toUpperCase().trim().split(' ');
+  private parseBlock(line: string, fileLineNumber: number): CodeLine {
+    const codeBlocks = line.toUpperCase().trim().split(/\s+/);
 
     const codeLine: CodeLine = {
+      fileLineNumber,
+      blockNumber: undefined,
+      sourceText: line,
+
       gCodes: [],
       mCodes: [],
+
       x: undefined,
       z: undefined,
       feed: undefined,
@@ -34,6 +43,9 @@ export class GCodeParserService {
       }
 
       switch (codeBlock[0]) {
+        case 'N':
+          codeLine.blockNumber = value;
+          break;
         case 'G':
           codeLine.gCodes.push(value);
           break;

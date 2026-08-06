@@ -1,1 +1,58 @@
-<p>controls works!</p>
+<nav class="machine-toolbar" aria-label="Simulation controls">
+
+  <button
+    class="machine-control machine-control--start"
+    [class.machine-control--active]="simulation.status() === 'running'"
+    type="button"
+    [disabled]="simulation.status() !== 'ready' && simulation.status() !== 'paused'
+     || !simulation.parserStatus()"
+    (click)="start()"
+  >
+    <span class="machine-control__icon">▶</span>
+    <span>Cycle Start</span>
+  </button>
+
+  <button
+    class="machine-control machine-control--pause"
+    [class.machine-control--active]="simulation.status() === 'paused'"
+    type="button"
+    [disabled]="simulation.status() !== 'running' || !simulation.parserStatus()"
+
+    (click)="pause()"
+  >
+    <span class="machine-control__icon">Ⅱ</span>
+    <span>Pause</span>
+  </button>
+
+  <button
+    class="machine-control machine-control--stop"
+    [class.machine-control--active]="simulation.status() === 'stopped'"
+    type="button"
+    [disabled]="simulation.status() !== 'running' || !simulation.parserStatus()"
+    (click)="stop()"
+  >
+    <span class="machine-control__icon">■</span>
+    <span>Stop</span>
+  </button>
+
+  <button
+    class="machine-control machine-control--reset"
+    [class.machine-control--active]="simulation.status() === 'ready'"
+    type="button"
+    [disabled]="simulation.status() !== 'paused' && simulation.status() !== 'stopped'
+     || !simulation.parserStatus()"
+    (click)="reset()"
+  >
+    <span class="machine-control__icon">↻</span>
+    <span>Reset</span>
+  </button>
+
+  <div
+    class="machine-state machine-state--ready"
+    role="status"
+    aria-live="polite"
+  >
+    <span class="machine-state__light"></span>
+    <span class="machine-state__text">Ready</span>
+  </div>
+</nav>

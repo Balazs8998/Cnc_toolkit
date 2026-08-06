@@ -1,0 +1,73 @@
+<section class="program-runner">
+  <header class="runner-header">
+    <div>
+      <span class="runner-header__label">
+        NC program
+      </span>
+
+      <h2>Program runner</h2>
+    </div>
+
+    <div class="runner-header__actions">
+      <span class="runner-mode">Read only</span>
+
+      <button
+        class="runner-header__edit-button"
+        type="button"
+        (click)="editProgram()"
+      >
+        Back to edit
+      </button>
+    </div>
+  </header>
+
+  <div
+    class="program-list"
+    role="list"
+  >
+    @for (
+      line of simulation.codeLines();
+      track line.fileLineNumber;
+      let index = $index
+      ) {
+      <div
+        class="program-line"
+        [class.program-line--active]="
+          index === simulation.currentLineIndex()
+        "
+        role="listitem"
+      >
+        <span class="program-line__arrow">
+          ▶
+        </span>
+
+        <span class="program-line__file-number">
+          {{ line.fileLineNumber }}
+        </span>
+
+        <span class="program-line__block-number">
+          @if (line.blockNumber !== undefined) {
+            N{{ line.blockNumber }}
+          } @else {
+            —
+          }
+        </span>
+
+        <code class="program-line__instruction">
+          {{ instructionText(line) }}
+        </code>
+      </div>
+    }
+  </div>
+
+  <footer class="runner-footer">
+    <span>
+      Lines: {{ simulation.codeLines().length }}
+    </span>
+
+    <span>
+      Encoding: UTF-8
+    </span>
+
+  </footer>
+</section>

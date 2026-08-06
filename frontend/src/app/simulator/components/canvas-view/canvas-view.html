@@ -12,35 +12,7 @@
   </header>
 
   <nav class="machine-toolbar" aria-label="Simulation controls">
-    <button class="machine-control machine-control--start" type="button">
-      <span class="machine-control__icon">▶</span>
-      <span>Cycle Start</span>
-    </button>
-
-    <button class="machine-control machine-control--pause" type="button">
-      <span class="machine-control__icon">Ⅱ</span>
-      <span>Pause</span>
-    </button>
-
-    <button class="machine-control machine-control--stop" type="button">
-      <span class="machine-control__icon">■</span>
-      <span>Stop</span>
-    </button>
-
-    <button class="machine-control machine-control--reset" type="button">
-      <span class="machine-control__icon">↻</span>
-      <span>Reset</span>
-    </button>
-
-    <div
-      class="machine-state machine-state--ready"
-      role="status"
-      aria-live="polite"
-    >
-      <span class="machine-state__light"></span>
-      <span class="machine-state__text">Ready</span>
-    </div>
-
+    <app-controls></app-controls>
   </nav>
 
   <div class="monitor-body">

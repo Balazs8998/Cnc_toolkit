@@ -1,6 +1,8 @@
-import { Service } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { MovePosition } from '../models/simulator-models/swiss-lateh-machine/move-position';
 import { CodeLine } from '../models/simulator-models/swiss-lateh-machine/codeLine';
+import { SimulationService } from './simulation.service';
+import { LinearMovementSegment } from '../models/simulator-models/swiss-lateh-machine/linear-movement-segment';
 
 // kérdés
 
@@ -8,6 +10,7 @@ import { CodeLine } from '../models/simulator-models/swiss-lateh-machine/codeLin
   autoProvided: false,
 })
 export class CanvasRendererService {
+  private readonly simulation = inject(SimulationService);
   private canvas: HTMLCanvasElement | null = null;
   private context: CanvasRenderingContext2D | null = null;
 
@@ -41,7 +44,7 @@ export class CanvasRendererService {
     }
 
     let currentPosition: MovePosition = {
-      x: 0,
+      x: -1,
       z: 0,
     };
 
@@ -73,16 +76,29 @@ export class CanvasRendererService {
     const target = this.machineToCanvas(targetPosition);
 
     this.context.beginPath();
-
     this.context.moveTo(start.pixelX, start.pixelY);
-
     this.context.lineTo(target.pixelX, target.pixelY);
 
     this.context.lineWidth = 3;
     this.context.strokeStyle = '#6565e6';
     this.context.stroke();
+  }
 
-    this.drawTool(targetPosition);
+  drawMovementFrame(completedMovements : readonly LinearMovementSegment[],
+                    startPosition: MovePosition,
+                    currentPosition: MovePosition): void {
+    if (this.canvas === null || this.context === null) {
+      return;
+    }
+
+    this.drawCoordinateSystem();
+
+    for (const movement of completedMovements) {
+      this.drawLinearMovement(movement.startPosition, movement.endPosition);
+    }
+
+    this.drawLinearMovement(startPosition, currentPosition);
+    this.drawTool(currentPosition);
   }
 
   private machineToCanvas(position: MovePosition): {
