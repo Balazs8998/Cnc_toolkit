@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, inject, model, output } from '@angular/core';
+import {
+  afterRenderEffect,
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  inject,
+  model,
+  output,
+  viewChildren,
+} from '@angular/core';
 import { SimulationService } from '../../services/simulation.service';
 import { CodeLine } from '../../models/simulator-models/swiss-lateh-machine/codeLine';
 
@@ -10,9 +19,25 @@ import { CodeLine } from '../../models/simulator-models/swiss-lateh-machine/code
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProgramRunner {
-
   protected readonly simulation = inject(SimulationService);
   readonly editRequested = output<void>();
+
+  private readonly programLines = viewChildren<ElementRef<HTMLElement>>('programLine');
+
+  constructor() {
+    afterRenderEffect({
+      write: () => {
+        const currentIndex = this.simulation.currentLineIndex();
+
+        const lines = this.programLines();
+
+        lines[currentIndex]?.nativeElement.scrollIntoView({
+          behavior: 'smooth',
+          block: 'nearest',
+        });
+      },
+    });
+  }
 
   protected instructionText(line: CodeLine): string {
     if (line.blockNumber === undefined) {
@@ -27,5 +52,4 @@ export class ProgramRunner {
     this.simulation.reset();
     this.editRequested.emit();
   }
-
 }

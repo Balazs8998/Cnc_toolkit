@@ -21,6 +21,7 @@
     </div>
   </header>
 
+
   <div
     class="program-list"
     role="list"
@@ -31,6 +32,7 @@
       let index = $index
       ) {
       <div
+        #programLine
         class="program-line"
         [class.program-line--active]="
           index === simulation.currentLineIndex()
