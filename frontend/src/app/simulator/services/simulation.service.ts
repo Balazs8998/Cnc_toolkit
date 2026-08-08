@@ -13,7 +13,6 @@ export class SimulationService {
   private readonly parser = inject(GCodeParserService);
   private readonly movementCalculator = inject(MovementCalculatorService);
 
-
   private readonly movementDurationMs = 2000;
 
   private animationFrameId: number | null = null;
@@ -21,7 +20,7 @@ export class SimulationService {
   private elapsedMovementTime = 0;
 
   private activeMovementStart: Position | null = null;
-  private activeMovementTarget: Position | null = null;
+  activeMovementTarget = signal<Position | null>(null);
 
   readonly codeLines = signal<readonly CodeLine[]>([]);
   readonly currentLineIndex = signal(0);
@@ -37,35 +36,29 @@ export class SimulationService {
     axialClearance: 0,
   });
 
-  private readonly initialPosition = computed<Position>(():Position => {
-    const pos : Position ={
-      x: (this.stockSetup().diameter + this.stockSetup().axialClearance ) /2,
-      z: -this.stockSetup().axialClearance
-
-    }
-     return pos;
-  })
+  private readonly initialPosition = computed<Position>((): Position => {
+    const pos: Position = {
+      x: (this.stockSetup().diameter + this.stockSetup().axialClearance) / 2,
+      z: -this.stockSetup().axialClearance,
+    };
+    return pos;
+  });
 
   readonly completedMovements = signal<readonly LinearMovementSegment[]>([]);
 
   readonly machineState = signal<MachineState>({
-    position : {x: this.initialPosition().x, z: this.initialPosition().z},
-    rpm : 0,
+    position: { x: this.initialPosition().x, z: this.initialPosition().z },
+    rpm: 0,
     feed: 0,
     activeGCodes: [],
     activeMCodes: [],
     activeLine: this.currentLineIndex(),
     status: this.status(),
-
-    })
+  });
 
   readonly movementStartPosition = signal({
     ...this.initialPosition(),
   });
-
-  // readonly currentPosition = signal({
-  //   ...this.initialPosition(),
-  // });
 
   readonly movementProgress = signal(0);
 
@@ -115,7 +108,7 @@ export class SimulationService {
     }
 
     this.activeMovementStart = null;
-    this.activeMovementTarget = null;
+    this.activeMovementTarget.set(null);
 
     this.movementStartedAt = 0;
     this.elapsedMovementTime = 0;
@@ -128,14 +121,10 @@ export class SimulationService {
       ...this.initialPosition(),
     });
 
-    this.machineState.update(state => ({
+    this.machineState.update((state) => ({
       ...state,
-      position : {x: this.initialPosition().x, z: this.initialPosition().z},
-    }))
-
-    // this.currentPosition.set({
-    //   ...this.initialPosition(),
-    // });
+      position: { x: this.initialPosition().x, z: this.initialPosition().z },
+    }));
 
     this.status.set('ready');
   }
@@ -164,6 +153,21 @@ export class SimulationService {
 
     const startPosition = this.machineState().position;
 
+    if (currentLine.rpm !== undefined) {
+      const rpm = currentLine.rpm;
+      this.machineState.update((state) => ({
+        ...state,
+        rpm: rpm,
+      }));
+    }
+    if (currentLine.feed !== undefined) {
+      const feed = currentLine.feed;
+      this.machineState.update((state) => ({
+        ...state,
+        feed: feed,
+      }));
+    }
+
     const movement = this.movementCalculator.calculateLinearMovement(currentLine, startPosition);
 
     const targetPosition: Position = {
@@ -174,7 +178,7 @@ export class SimulationService {
     this.movementStartPosition.set(startPosition);
 
     this.activeMovementStart = startPosition;
-    this.activeMovementTarget = targetPosition;
+    this.activeMovementTarget.set(targetPosition);
 
     this.elapsedMovementTime = 0;
     this.movementStartedAt = performance.now();
@@ -202,30 +206,23 @@ export class SimulationService {
 
     this.movementProgress.set(progress);
 
-    const xPos =
-      this.activeMovementStart.x +
-      (this.activeMovementTarget.x - this.activeMovementStart.x) * progress;
+    const target = this.activeMovementTarget();
 
-    const zPos = this.activeMovementStart.z +
-        (this.activeMovementTarget.z - this.activeMovementStart.z) * progress;
+    if (this.status() !== 'running'  || target === null) {
+      return;
+    }
 
-    this.machineState.update(state => ({
+    const xPos = this.activeMovementStart.x + (target.x - this.activeMovementStart.x) * progress;
+
+    const zPos = this.activeMovementStart.z + (target.z - this.activeMovementStart.z) * progress;
+
+    this.machineState.update((state) => ({
       ...state,
       position: {
         x: xPos,
-        z: zPos
+        z: zPos,
       },
     }));
-
-    // this.currentPosition.set({
-    //   x:
-    //     this.activeMovementStart.x +
-    //     (this.activeMovementTarget.x - this.activeMovementStart.x) * progress,
-    //
-    //   z:
-    //     this.activeMovementStart.z +
-    //     (this.activeMovementTarget.z - this.activeMovementStart.z) * progress,
-    // });
 
     if (progress < 1) {
       this.animationFrameId = requestAnimationFrame(this.animateFrame);
@@ -241,7 +238,7 @@ export class SimulationService {
   };
 
   private resumeMovement(): void {
-    if (this.activeMovementStart === null || this.activeMovementTarget === null) {
+    if (this.activeMovementStart === null || this.activeMovementTarget() === null) {
       return;
     }
 
@@ -253,7 +250,7 @@ export class SimulationService {
 
   private completeMovement(): void {
     const startPosition = this.activeMovementStart;
-    const targetPosition = this.activeMovementTarget;
+    const targetPosition = this.activeMovementTarget();
 
     if (startPosition === null || targetPosition === null) {
       return;
@@ -267,15 +264,13 @@ export class SimulationService {
       },
     ]);
 
-    this.machineState.update(state => ({
+    this.machineState.update((state) => ({
       ...state,
       position: {
         x: targetPosition.x,
-        z: targetPosition.z
-      }
-    }))
-
-    // this.currentPosition.set({ ...targetPosition });
+        z: targetPosition.z,
+      },
+    }));
 
     this.movementStartPosition.set({ ...targetPosition });
 
@@ -283,12 +278,20 @@ export class SimulationService {
     this.elapsedMovementTime = 0;
 
     this.activeMovementStart = null;
-    this.activeMovementTarget = null;
+    this.activeMovementTarget.set(null);
 
     const nextLineIndex = this.currentLineIndex() + 1;
 
     if (nextLineIndex >= this.codeLines().length) {
       this.status.set('stopped');
+      this.machineState.update((state) => ({
+        ...state,
+        rpm: 0,
+      }));
+      this.machineState.update((state) => ({
+        ...state,
+        feed: 0,
+      }));
       return;
     }
 

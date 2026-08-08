@@ -3,8 +3,6 @@ import { Position } from '../models/swiss-lateh-machine/simulator-models/positio
 import { SimulationService } from './simulation.service';
 import { LinearMovementSegment } from '../models/swiss-lateh-machine/simulator-models/linear-movement-segment';
 
-// kérdés
-
 @Service({
   autoProvided: false,
 })

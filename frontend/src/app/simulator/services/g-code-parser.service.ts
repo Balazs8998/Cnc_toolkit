@@ -63,7 +63,8 @@ export class GCodeParserService {
           break;
 
         case 'S':
-          codeLine.rpm = value;
+          codeLine.rpm = Number(codeBlock.slice(3));
+
           break;
 
         case 'F':

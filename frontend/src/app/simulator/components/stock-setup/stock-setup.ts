@@ -55,8 +55,6 @@ export class StockSetup {
       position: currentPos,
     }))
 
-    // this.simulation.currentPosition.set(currentPos)
-
     this.simulation.movementStartPosition.set(currentPos)
 
   }

@@ -6,7 +6,7 @@ import {
   computed,
   ElementRef,
   inject,
-  viewChild,
+  viewChild
 } from '@angular/core';
 import { CanvasRendererService } from '../../services/canvas-renderer.service';
 import { SimulationService } from '../../services/simulation.service';
@@ -25,13 +25,39 @@ export class CanvasView {
   private readonly renderer = inject(CanvasRendererService);
   private readonly simulation = inject(SimulationService);
 
-  readonly currentPos = this.simulation.movementStartPosition;
-  // readonly distanceToGo = this.simulation.machineState().position;
+  readonly currentPos = computed(() => {
+    const target = this.simulation.activeMovementTarget();
+
+    if (target === null) {
+      return { x: 0, z: 0 };
+    }
+
+    return {
+      x: target.x ,
+      z: target.z,
+    };
+  });
 
   readonly distanceToGo = computed(() => {
-    const movePosition = this.simulation.machineState().position;
-    return movePosition
-  })
+    const target = this.simulation.activeMovementTarget();
+
+    if (target === null) {
+      return { x: 0, z: 0 };
+    }
+
+    return {
+      x: target.x - this.simulation.machineState().position.x,
+      z: target.z - this.simulation.machineState().position.z,
+    };
+  });
+
+  readonly rpm = computed(() => {
+    return this.simulation.machineState().rpm;
+  });
+
+  readonly feed = computed(() => {
+    return this.simulation.machineState().feed;
+  });
 
   private readonly canvasRef = viewChild.required<ElementRef<HTMLCanvasElement>>('cncCanvas');
 

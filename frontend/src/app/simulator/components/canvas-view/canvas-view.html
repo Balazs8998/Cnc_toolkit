@@ -84,7 +84,7 @@
         <div class="process-value">
           <span>Feed rate</span>
           <strong>
-            0.000
+            {{feed() | number: '1.3-3'}}
             <small>mm/rev</small>
           </strong>
         </div>
@@ -92,7 +92,7 @@
         <div class="process-value">
           <span>Spindle speed</span>
           <strong>
-            12000
+            {{rpm()}}
             <small>rpm</small>
           </strong>
         </div>
