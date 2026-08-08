@@ -1,9 +1,10 @@
 import { computed, inject, Service, signal } from '@angular/core';
 import { GCodeParserService } from './g-code-parser.service';
-import { CodeLine } from '../models/swiss-lateh-machine/simulator-models/codeLine';
+import { CodeLine } from '../models/swiss-lateh-machine/simulator-models/code-line';
 import { MovementCalculatorService } from './movement-calculator.service';
-import { MovePosition } from '../models/swiss-lateh-machine/simulator-models/move-position';
+import { Position } from '../models/swiss-lateh-machine/simulator-models/position';
 import { LinearMovementSegment } from '../models/swiss-lateh-machine/simulator-models/linear-movement-segment';
+import { MachineState } from '../models/swiss-lateh-machine/simulator-models/machine-state';
 
 @Service({
   autoProvided: false,
@@ -19,8 +20,8 @@ export class SimulationService {
   private movementStartedAt = 0;
   private elapsedMovementTime = 0;
 
-  private activeMovementStart: MovePosition | null = null;
-  private activeMovementTarget: MovePosition | null = null;
+  private activeMovementStart: Position | null = null;
+  private activeMovementTarget: Position | null = null;
 
   readonly codeLines = signal<readonly CodeLine[]>([]);
   readonly currentLineIndex = signal(0);
@@ -36,8 +37,8 @@ export class SimulationService {
     axialClearance: 0,
   });
 
-  private readonly initialPosition = computed<MovePosition>(():MovePosition => {
-    const pos : MovePosition ={
+  private readonly initialPosition = computed<Position>(():Position => {
+    const pos : Position ={
       x: (this.stockSetup().diameter + this.stockSetup().axialClearance ) /2,
       z: -this.stockSetup().axialClearance
 
@@ -47,13 +48,24 @@ export class SimulationService {
 
   readonly completedMovements = signal<readonly LinearMovementSegment[]>([]);
 
+  readonly machineState = signal<MachineState>({
+    position : {x: this.initialPosition().x, z: this.initialPosition().z},
+    rpm : 0,
+    feed: 0,
+    activeGCodes: [],
+    activeMCodes: [],
+    activeLine: this.currentLineIndex(),
+    status: this.status(),
+
+    })
+
   readonly movementStartPosition = signal({
     ...this.initialPosition(),
   });
 
-  readonly currentPosition = signal({
-    ...this.initialPosition(),
-  });
+  // readonly currentPosition = signal({
+  //   ...this.initialPosition(),
+  // });
 
   readonly movementProgress = signal(0);
 
@@ -116,9 +128,14 @@ export class SimulationService {
       ...this.initialPosition(),
     });
 
-    this.currentPosition.set({
-      ...this.initialPosition(),
-    });
+    this.machineState.update(state => ({
+      ...state,
+      position : {x: this.initialPosition().x, z: this.initialPosition().z},
+    }))
+
+    // this.currentPosition.set({
+    //   ...this.initialPosition(),
+    // });
 
     this.status.set('ready');
   }
@@ -145,11 +162,11 @@ export class SimulationService {
       return;
     }
 
-    const startPosition = this.currentPosition();
+    const startPosition = this.machineState().position;
 
     const movement = this.movementCalculator.calculateLinearMovement(currentLine, startPosition);
 
-    const targetPosition: MovePosition = {
+    const targetPosition: Position = {
       x: startPosition.x + movement.x,
       z: startPosition.z + movement.z,
     };
@@ -185,15 +202,30 @@ export class SimulationService {
 
     this.movementProgress.set(progress);
 
-    this.currentPosition.set({
-      x:
-        this.activeMovementStart.x +
-        (this.activeMovementTarget.x - this.activeMovementStart.x) * progress,
+    const xPos =
+      this.activeMovementStart.x +
+      (this.activeMovementTarget.x - this.activeMovementStart.x) * progress;
 
-      z:
-        this.activeMovementStart.z +
-        (this.activeMovementTarget.z - this.activeMovementStart.z) * progress,
-    });
+    const zPos = this.activeMovementStart.z +
+        (this.activeMovementTarget.z - this.activeMovementStart.z) * progress;
+
+    this.machineState.update(state => ({
+      ...state,
+      position: {
+        x: xPos,
+        z: zPos
+      },
+    }));
+
+    // this.currentPosition.set({
+    //   x:
+    //     this.activeMovementStart.x +
+    //     (this.activeMovementTarget.x - this.activeMovementStart.x) * progress,
+    //
+    //   z:
+    //     this.activeMovementStart.z +
+    //     (this.activeMovementTarget.z - this.activeMovementStart.z) * progress,
+    // });
 
     if (progress < 1) {
       this.animationFrameId = requestAnimationFrame(this.animateFrame);
@@ -235,7 +267,16 @@ export class SimulationService {
       },
     ]);
 
-    this.currentPosition.set({ ...targetPosition });
+    this.machineState.update(state => ({
+      ...state,
+      position: {
+        x: targetPosition.x,
+        z: targetPosition.z
+      }
+    }))
+
+    // this.currentPosition.set({ ...targetPosition });
+
     this.movementStartPosition.set({ ...targetPosition });
 
     this.animationFrameId = null;

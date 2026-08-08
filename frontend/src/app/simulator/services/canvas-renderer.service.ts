@@ -1,5 +1,5 @@
 import { computed, inject, Service } from '@angular/core';
-import { MovePosition } from '../models/swiss-lateh-machine/simulator-models/move-position';
+import { Position } from '../models/swiss-lateh-machine/simulator-models/position';
 import { SimulationService } from './simulation.service';
 import { LinearMovementSegment } from '../models/swiss-lateh-machine/simulator-models/linear-movement-segment';
 
@@ -45,7 +45,7 @@ export class CanvasRendererService {
 
 
 
-  private readonly startPosition: MovePosition = {
+  private readonly startPosition: Position = {
     x: 0,
     z: 0,
   };
@@ -64,15 +64,15 @@ export class CanvasRendererService {
     this.drawTool(this.startPosition);
   }
 
-  private drawLinearMovement(startPosition: MovePosition, targetPosition: MovePosition): void {
+  private drawLinearMovement(startPosition: Position, targetPosition: Position): void {
     if (this.context === null) {
       return;
     }
-    const radialStartPos: MovePosition = {
+    const radialStartPos: Position = {
       x: startPosition.x / 2,
       z: startPosition.z,
     };
-    const radialTargetPos: MovePosition = {
+    const radialTargetPos: Position = {
       x: targetPosition.x / 2,
       z: targetPosition.z,
     };
@@ -91,8 +91,8 @@ export class CanvasRendererService {
 
   drawMovementFrame(
     completedMovements: readonly LinearMovementSegment[],
-    startPosition: MovePosition,
-    currentPosition: MovePosition,
+    startPosition: Position,
+    currentPosition: Position,
   ): void {
     if (this.canvas === null || this.context === null) {
       return;
@@ -112,7 +112,7 @@ export class CanvasRendererService {
 
   }
 
-  private machineToCanvas(position: MovePosition): {
+  private machineToCanvas(position: Position): {
     pixelX: number;
     pixelY: number;
   } {
@@ -197,12 +197,12 @@ export class CanvasRendererService {
     this.context.fillText('X-', xNegativeEnd.pixelX + 8, xNegativeEnd.pixelY);
   }
 
-  private drawTool(position: MovePosition): void {
+  private drawTool(position: Position): void {
     if (this.context === null) {
       return;
     }
 
-    const radialPosition : MovePosition = {
+    const radialPosition : Position = {
       x: position.x / 2,
       z: position.z,
     }

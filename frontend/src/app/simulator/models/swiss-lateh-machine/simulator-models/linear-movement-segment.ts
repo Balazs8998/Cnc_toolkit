@@ -1,6 +1,6 @@
-import { MovePosition } from './move-position';
+import { Position } from './position';
 
 export interface LinearMovementSegment {
-  startPosition: MovePosition;
-  endPosition: MovePosition;
+  startPosition: Position;
+  endPosition: Position;
 }

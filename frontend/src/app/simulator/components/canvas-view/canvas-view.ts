@@ -3,6 +3,7 @@ import {
   afterRenderEffect,
   ChangeDetectionStrategy,
   Component,
+  computed,
   ElementRef,
   inject,
   viewChild,
@@ -25,7 +26,12 @@ export class CanvasView {
   private readonly simulation = inject(SimulationService);
 
   readonly currentPos = this.simulation.movementStartPosition;
-  readonly distanceToGo = this.simulation.currentPosition;
+  // readonly distanceToGo = this.simulation.machineState().position;
+
+  readonly distanceToGo = computed(() => {
+    const movePosition = this.simulation.machineState().position;
+    return movePosition
+  })
 
   private readonly canvasRef = viewChild.required<ElementRef<HTMLCanvasElement>>('cncCanvas');
 
@@ -44,7 +50,7 @@ export class CanvasView {
 
         const startPosition = this.simulation.movementStartPosition();
 
-        const currentPosition = this.simulation.currentPosition();
+        const currentPosition = this.simulation.machineState().position;
 
         this.renderer.drawMovementFrame(completedMovements, startPosition, currentPosition);
       },

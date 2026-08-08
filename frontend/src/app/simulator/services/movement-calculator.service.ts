@@ -1,11 +1,11 @@
 import { Service } from '@angular/core';
-import { CodeLine } from '../models/swiss-lateh-machine/simulator-models/codeLine';
-import { MovePosition } from '../models/swiss-lateh-machine/simulator-models/move-position';
+import { CodeLine } from '../models/swiss-lateh-machine/simulator-models/code-line';
+import { Position } from '../models/swiss-lateh-machine/simulator-models/position';
 
 @Service()
 export class MovementCalculatorService {
 
-  calculateLinearMovement(line: CodeLine, currentPosition: MovePosition): MovePosition {
+  calculateLinearMovement(line: CodeLine, currentPosition: Position): Position {
     let xValue: number;
     let zValue: number;
 
@@ -21,7 +21,7 @@ export class MovementCalculatorService {
       zValue = line.z - currentPosition.z;
     }
 
-    const movementDelta: MovePosition = {
+    const movementDelta: Position = {
       x: 0,
       z: 0,
     };
