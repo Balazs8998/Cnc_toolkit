@@ -1,9 +1,9 @@
 import { computed, inject, Service, signal } from '@angular/core';
 import { GCodeParserService } from './g-code-parser.service';
-import { CodeLine } from '../models/simulator-models/swiss-lateh-machine/codeLine';
+import { CodeLine } from '../models/swiss-lateh-machine/simulator-models/codeLine';
 import { MovementCalculatorService } from './movement-calculator.service';
-import { MovePosition } from '../models/simulator-models/swiss-lateh-machine/move-position';
-import { LinearMovementSegment } from '../models/simulator-models/swiss-lateh-machine/linear-movement-segment';
+import { MovePosition } from '../models/swiss-lateh-machine/simulator-models/move-position';
+import { LinearMovementSegment } from '../models/swiss-lateh-machine/simulator-models/linear-movement-segment';
 
 @Service({
   autoProvided: false,

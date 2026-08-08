@@ -1,8 +1,8 @@
 import { Component, inject, output, SimpleChanges } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { SimulationService } from '../../services/simulation.service';
-import { StockSetupData } from '../../models/simulator-models/swiss-lateh-machine/stock-setup/stock-setup';
-import { MovePosition } from '../../models/simulator-models/swiss-lateh-machine/move-position';
+import { StockSetupData } from '../../models/swiss-lateh-machine/simulator-models/stock-setup/stock-setup';
+import { MovePosition } from '../../models/swiss-lateh-machine/simulator-models/move-position';
 
 @Component({
   selector: 'app-stock-setup',

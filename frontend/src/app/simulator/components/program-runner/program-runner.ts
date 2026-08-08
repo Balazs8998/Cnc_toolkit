@@ -9,7 +9,7 @@ import {
   viewChildren,
 } from '@angular/core';
 import { SimulationService } from '../../services/simulation.service';
-import { CodeLine } from '../../models/simulator-models/swiss-lateh-machine/codeLine';
+import { CodeLine } from '../../models/swiss-lateh-machine/simulator-models/codeLine';
 
 @Component({
   selector: 'app-program-runner',

@@ -1,5 +1,5 @@
 import { Service } from '@angular/core';
-import { CodeLine } from '../models/simulator-models/swiss-lateh-machine/codeLine';
+import { CodeLine } from '../models/swiss-lateh-machine/simulator-models/codeLine';
 
 @Service()
 export class GCodeParserService {

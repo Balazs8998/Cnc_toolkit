@@ -1,7 +1,7 @@
 import { computed, inject, Service } from '@angular/core';
-import { MovePosition } from '../models/simulator-models/swiss-lateh-machine/move-position';
+import { MovePosition } from '../models/swiss-lateh-machine/simulator-models/move-position';
 import { SimulationService } from './simulation.service';
-import { LinearMovementSegment } from '../models/simulator-models/swiss-lateh-machine/linear-movement-segment';
+import { LinearMovementSegment } from '../models/swiss-lateh-machine/simulator-models/linear-movement-segment';
 
 // kérdés
 

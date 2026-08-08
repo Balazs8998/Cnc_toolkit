@@ -1,6 +1,6 @@
 import { Service } from '@angular/core';
-import { CodeLine } from '../models/simulator-models/swiss-lateh-machine/codeLine';
-import { MovePosition } from '../models/simulator-models/swiss-lateh-machine/move-position';
+import { CodeLine } from '../models/swiss-lateh-machine/simulator-models/codeLine';
+import { MovePosition } from '../models/swiss-lateh-machine/simulator-models/move-position';
 
 @Service()
 export class MovementCalculatorService {
