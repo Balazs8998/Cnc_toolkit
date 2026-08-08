@@ -26,7 +26,7 @@ export class MovementCalculatorService {
       z: 0,
     };
 
-    movementDelta.x = xValue / 2;
+    movementDelta.x = xValue;
     movementDelta.z = zValue;
 
     return movementDelta;

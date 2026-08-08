@@ -1,6 +1,5 @@
-import { inject, Service } from '@angular/core';
+import { computed, inject, Service } from '@angular/core';
 import { MovePosition } from '../models/simulator-models/swiss-lateh-machine/move-position';
-import { CodeLine } from '../models/simulator-models/swiss-lateh-machine/codeLine';
 import { SimulationService } from './simulation.service';
 import { LinearMovementSegment } from '../models/simulator-models/swiss-lateh-machine/linear-movement-segment';
 
@@ -14,17 +13,44 @@ export class CanvasRendererService {
   private canvas: HTMLCanvasElement | null = null;
   private context: CanvasRenderingContext2D | null = null;
 
-  private readonly xMin = -40;
-  private readonly xMax = 100;
-  private readonly zMin = -40;
-  private readonly zMax = 100;
-  private readonly padding = 20;
+  private readonly xMin = computed(() => {
+    const stock = this.simulation.stockSetup();
+    if(stock.diameter < 20){
+      return -2 ;
+    }else {
+      return -5
+    }
+  });
+
+  private readonly xMax = computed(() => {
+    const stock = this.simulation.stockSetup();
+    return (stock.diameter + stock.radialClearance +8) / 2;
+  });
+
+  private readonly zMin = computed(() => {
+    const stock = this.simulation.stockSetup();
+    if (stock.workLength < 20) {
+      return -5;
+    } else {
+      return -10;
+    }
+  });
+
+  private readonly zMax = computed(() => {
+    const stock = this.simulation.stockSetup();
+    return stock.workLength + stock.axialClearance;  });
+
+
+  private readonly padding = 5;
+
+
+
   private readonly startPosition: MovePosition = {
     x: 0,
     z: 0,
   };
 
-  initialize(canvas: HTMLCanvasElement): void {
+   initialize(canvas: HTMLCanvasElement): void {
     const context = canvas.getContext('2d');
 
     if (context === null) {
@@ -38,42 +64,21 @@ export class CanvasRendererService {
     this.drawTool(this.startPosition);
   }
 
-  drawProgram(codeLines: readonly CodeLine[]): void {
-    if (this.canvas === null || this.context === null) {
-      return;
-    }
-
-    let currentPosition: MovePosition = {
-      x: -1,
-      z: 0,
-    };
-
-    this.drawCoordinateSystem();
-    this.drawTool(currentPosition);
-
-    for (const line of codeLines) {
-      if (!line.gCodes.includes(1)) {
-        continue;
-      }
-
-      const targetPosition: MovePosition = {
-        x: line.x ?? currentPosition.x,
-        z: line.z ?? currentPosition.z,
-      };
-
-      this.drawLinearMovement(currentPosition, targetPosition);
-
-      currentPosition = targetPosition;
-    }
-  }
-
   private drawLinearMovement(startPosition: MovePosition, targetPosition: MovePosition): void {
     if (this.context === null) {
       return;
     }
+    const radialStartPos: MovePosition = {
+      x: startPosition.x / 2,
+      z: startPosition.z,
+    };
+    const radialTargetPos: MovePosition = {
+      x: targetPosition.x / 2,
+      z: targetPosition.z,
+    };
 
-    const start = this.machineToCanvas(startPosition);
-    const target = this.machineToCanvas(targetPosition);
+    const start = this.machineToCanvas(radialStartPos);
+    const target = this.machineToCanvas(radialTargetPos);
 
     this.context.beginPath();
     this.context.moveTo(start.pixelX, start.pixelY);
@@ -84,9 +89,11 @@ export class CanvasRendererService {
     this.context.stroke();
   }
 
-  drawMovementFrame(completedMovements : readonly LinearMovementSegment[],
-                    startPosition: MovePosition,
-                    currentPosition: MovePosition): void {
+  drawMovementFrame(
+    completedMovements: readonly LinearMovementSegment[],
+    startPosition: MovePosition,
+    currentPosition: MovePosition,
+  ): void {
     if (this.canvas === null || this.context === null) {
       return;
     }
@@ -97,8 +104,12 @@ export class CanvasRendererService {
       this.drawLinearMovement(movement.startPosition, movement.endPosition);
     }
 
-    this.drawLinearMovement(startPosition, currentPosition);
-    this.drawTool(currentPosition);
+      this.drawLinearMovement(startPosition, currentPosition);
+      this.drawTool(currentPosition);
+
+
+
+
   }
 
   private machineToCanvas(position: MovePosition): {
@@ -109,11 +120,10 @@ export class CanvasRendererService {
       throw new Error('Canvas has not been initialized.');
     }
 
-    const xRange = this.xMax - this.xMin;
-    const zRange = this.zMax - this.zMin;
+    const xRange = this.xMax() - this.xMin();
+    const zRange = this.zMax() - this.zMin();
 
     const availableWidth = this.canvas.width - this.padding * 2;
-
     const availableHeight = this.canvas.height - this.padding * 2;
 
     const scale = Math.min(availableWidth / zRange, availableHeight / xRange);
@@ -126,33 +136,33 @@ export class CanvasRendererService {
     const offsetY = (this.canvas.height - drawingHeight) / 2;
 
     return {
-      pixelX: offsetX + (position.z - this.zMin) * scale,
-      pixelY: offsetY + (this.xMax - position.x) * scale,
+      pixelX: offsetX + (position.z - this.zMin()) * scale,
+      pixelY: offsetY + (this.xMax() - position.x) * scale,
     };
   }
 
-  private drawCoordinateSystem(): void {
+   drawCoordinateSystem(): void {
     if (this.canvas === null || this.context === null) {
       return;
     }
 
     const zNegativeEnd = this.machineToCanvas({
       x: 0,
-      z: this.zMin,
+      z: this.zMin(),
     });
 
     const zPositiveEnd = this.machineToCanvas({
       x: 0,
-      z: this.zMax,
+      z: this.zMax(),
     });
 
     const xNegativeEnd = this.machineToCanvas({
-      x: this.xMin,
+      x: this.xMin(),
       z: 0,
     });
 
     const xPositiveEnd = this.machineToCanvas({
-      x: this.xMax,
+      x: this.xMax(),
       z: 0,
     });
 
@@ -192,7 +202,12 @@ export class CanvasRendererService {
       return;
     }
 
-    const point = this.machineToCanvas(position);
+    const radialPosition : MovePosition = {
+      x: position.x / 2,
+      z: position.z,
+    }
+
+    const point = this.machineToCanvas(radialPosition);
 
     this.context.beginPath();
 

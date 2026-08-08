@@ -2,6 +2,7 @@ import { Component, inject, output, SimpleChanges } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { SimulationService } from '../../services/simulation.service';
 import { StockSetupData } from '../../models/simulator-models/swiss-lateh-machine/stock-setup/stock-setup';
+import { MovePosition } from '../../models/simulator-models/swiss-lateh-machine/move-position';
 
 @Component({
   selector: 'app-stock-setup',
@@ -41,9 +42,16 @@ export class StockSetup {
       return;
     }
     const stockSetup: StockSetupData = this.stockSetupForm.getRawValue();
+    const currentPos : MovePosition = {
+      x: (stockSetup.diameter + stockSetup.radialClearance)/2,
+      z: -stockSetup.axialClearance
+    }
 
     this.simulation.stockSetup.set(stockSetup);
     this.closeStockSetup.emit();
     console.log(stockSetup);
+    this.simulation.currentPosition.set(currentPos)
+    this.simulation.movementStartPosition.set(currentPos)
+
   }
 }

@@ -10,6 +10,7 @@ import {
 import { CanvasRendererService } from '../../services/canvas-renderer.service';
 import { SimulationService } from '../../services/simulation.service';
 import { Controls } from '../controls/controls';
+import { DecimalPipe } from '@angular/common';
 
 @Component({
   selector: 'app-canvas-view',
@@ -17,11 +18,14 @@ import { Controls } from '../controls/controls';
   templateUrl: './canvas-view.html',
   styleUrl: './canvas-view.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [Controls],
+  imports: [Controls, DecimalPipe],
 })
 export class CanvasView {
   private readonly renderer = inject(CanvasRendererService);
   private readonly simulation = inject(SimulationService);
+
+  readonly currentPos = this.simulation.movementStartPosition;
+  readonly distanceToGo = this.simulation.currentPosition;
 
   private readonly canvasRef = viewChild.required<ElementRef<HTMLCanvasElement>>('cncCanvas');
 
@@ -47,3 +51,5 @@ export class CanvasView {
     });
   }
 }
+
+

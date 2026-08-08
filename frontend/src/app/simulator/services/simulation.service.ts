@@ -1,10 +1,9 @@
-import { inject, Service, signal } from '@angular/core';
+import { computed, inject, Service, signal } from '@angular/core';
 import { GCodeParserService } from './g-code-parser.service';
 import { CodeLine } from '../models/simulator-models/swiss-lateh-machine/codeLine';
 import { MovementCalculatorService } from './movement-calculator.service';
 import { MovePosition } from '../models/simulator-models/swiss-lateh-machine/move-position';
 import { LinearMovementSegment } from '../models/simulator-models/swiss-lateh-machine/linear-movement-segment';
-
 
 @Service({
   autoProvided: false,
@@ -13,34 +12,6 @@ export class SimulationService {
   private readonly parser = inject(GCodeParserService);
   private readonly movementCalculator = inject(MovementCalculatorService);
 
-  readonly codeLines = signal<readonly CodeLine[]>([]);
-  readonly currentLineIndex = signal(0);
-  readonly hasProgram = signal(false);
-  readonly rawProgram = signal('');
-  readonly status = signal('ready');
-  readonly parserStatus = signal(false);
-  readonly stockSetup = signal({
-    diameter: 0,
-    workLength: 0,
-    radialClearance: 0,
-    axialClearance: 0,
-  });
-
-  private readonly initialPosition: MovePosition = {
-    x: -1,
-    z: 0,
-  };
-
-  readonly completedMovements = signal<readonly LinearMovementSegment[]>([]);
-  readonly movementStartPosition = signal<MovePosition>({
-    ...this.initialPosition,
-  });
-
-  readonly currentPosition = signal<MovePosition>({
-    ...this.initialPosition,
-  });
-
-  readonly movementProgress = signal(0);
 
   private readonly movementDurationMs = 2000;
 
@@ -50,6 +21,41 @@ export class SimulationService {
 
   private activeMovementStart: MovePosition | null = null;
   private activeMovementTarget: MovePosition | null = null;
+
+  readonly codeLines = signal<readonly CodeLine[]>([]);
+  readonly currentLineIndex = signal(0);
+  readonly hasProgram = signal(false);
+  readonly rawProgram = signal('');
+  readonly status = signal('ready');
+  readonly parserStatus = signal(false);
+
+  readonly stockSetup = signal({
+    diameter: 0,
+    workLength: 0,
+    radialClearance: 0,
+    axialClearance: 0,
+  });
+
+  private readonly initialPosition = computed<MovePosition>(():MovePosition => {
+    const pos : MovePosition ={
+      x: (this.stockSetup().diameter + this.stockSetup().axialClearance ) /2,
+      z: -this.stockSetup().axialClearance
+
+    }
+     return pos;
+  })
+
+  readonly completedMovements = signal<readonly LinearMovementSegment[]>([]);
+
+  readonly movementStartPosition = signal({
+    ...this.initialPosition(),
+  });
+
+  readonly currentPosition = signal({
+    ...this.initialPosition(),
+  });
+
+  readonly movementProgress = signal(0);
 
   loadProgram(program: string): void {
     const parsedCodeLines = this.parser.parseProgram(program);
@@ -66,6 +72,7 @@ export class SimulationService {
       this.status.set('running');
       return;
     }
+
     this.startMovement();
     this.status.set('running');
   }
@@ -106,11 +113,11 @@ export class SimulationService {
     this.completedMovements.set([]);
 
     this.movementStartPosition.set({
-      ...this.initialPosition,
+      ...this.initialPosition(),
     });
 
     this.currentPosition.set({
-      ...this.initialPosition,
+      ...this.initialPosition(),
     });
 
     this.status.set('ready');
@@ -124,7 +131,6 @@ export class SimulationService {
     if (!this.parserStatus()) {
       return;
     }
-
 
     const currentLine = this.codeLines()[this.currentLineIndex()];
 
@@ -196,8 +202,9 @@ export class SimulationService {
     }
 
     this.completeMovement();
-    if(this.codeLines().length === this.completedMovements().length){
-      this.status.set('stopped')
+
+    if (this.codeLines().length === this.completedMovements().length) {
+      this.status.set('stopped');
     }
   };
 
