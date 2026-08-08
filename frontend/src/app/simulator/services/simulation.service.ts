@@ -5,11 +5,18 @@ import { MovementCalculatorService } from './movement-calculator.service';
 import { Position } from '../models/swiss-lateh-machine/simulator-models/position';
 import { LinearMovementSegment } from '../models/swiss-lateh-machine/simulator-models/linear-movement-segment';
 import { MachineState } from '../models/swiss-lateh-machine/simulator-models/machine-state';
+import { Gcode } from '../models/swiss-lateh-machine/simulator-models/gcode';
+import { Mcode } from '../models/swiss-lateh-machine/simulator-models/mcode';
+import { MGCodeCashTest } from './parser-service/m-g-code-cash-test';
 
 @Service({
   autoProvided: false,
 })
 export class SimulationService {
+  //test
+  private readonly testChase = inject(MGCodeCashTest);
+  //test
+
   private readonly parser = inject(GCodeParserService);
   private readonly movementCalculator = inject(MovementCalculatorService);
 
@@ -50,8 +57,8 @@ export class SimulationService {
     position: { x: this.initialPosition().x, z: this.initialPosition().z },
     rpm: 0,
     feed: 0,
-    activeGCodes: [],
-    activeMCodes: [],
+    activeGCodes: new Set<Gcode>(),
+    activeMCodes: new Set<Mcode>(),
     activeLine: this.currentLineIndex(),
     status: this.status(),
   });
@@ -145,7 +152,7 @@ export class SimulationService {
       return;
     }
 
-    if (!currentLine.gCodes.includes(1)) {
+    if (!currentLine.gCodes.includes(1) && !currentLine.gCodes.includes(0)) {
       this.currentLineIndex.update((index) => index + 1);
       this.startMovement();
       return;
@@ -167,6 +174,9 @@ export class SimulationService {
         feed: feed,
       }));
     }
+
+    this.updateActiveCodesFromLine(currentLine);
+
 
     const movement = this.movementCalculator.calculateLinearMovement(currentLine, startPosition);
 
@@ -208,7 +218,7 @@ export class SimulationService {
 
     const target = this.activeMovementTarget();
 
-    if (this.status() !== 'running'  || target === null) {
+    if (this.status() !== 'running' || target === null) {
       return;
     }
 
@@ -301,5 +311,74 @@ export class SimulationService {
 
   private hasProgramChange() {
     this.hasProgram.update((value) => !value);
+  }
+
+
+  private updateActiveCodesFromLine(currentLine: CodeLine): void {
+    this.machineState.update((state) => {
+      const updatedGCodes = new Set(state.activeGCodes);
+      const updatedMCodes = new Set(state.activeMCodes);
+
+      // Az előző sor BLOCK_ONLY kódjai már nem aktívak.
+      for (const activeGCode of updatedGCodes) {
+        if (activeGCode.behavior === 'BLOCK_ONLY') {
+          updatedGCodes.delete(activeGCode);
+        }
+      }
+
+      for (const activeMCode of updatedMCodes) {
+        if (activeMCode.behavior === 'BLOCK_ONLY') {
+          updatedMCodes.delete(activeMCode);
+        }
+      }
+
+      // Aktuális G-kódok feldolgozása.
+      for (const gCodeValue of currentLine.gCodes) {
+        const gCode = this.testChase.gCodeCache.find(
+          (code) => Number(code.gCode.slice(1)) === gCodeValue,
+        );
+
+        if (gCode === undefined) {
+          continue;
+        }
+
+        if (gCode.behavior === 'MODAL' && gCode.modalGroup !== undefined) {
+          for (const activeGCode of updatedGCodes) {
+            if (activeGCode.modalGroup === gCode.modalGroup) {
+              updatedGCodes.delete(activeGCode);
+            }
+          }
+        }
+
+        updatedGCodes.add(gCode);
+      }
+
+      // Aktuális M-kódok feldolgozása.
+      for (const mCodeValue of currentLine.mCodes) {
+        const mCode = this.testChase.mCodeCache.find(
+          (code) => Number(code.mCode.slice(1)) === mCodeValue,
+        );
+
+        if (mCode === undefined) {
+          continue;
+        }
+
+        if (mCode.behavior === 'MODAL') {
+          for (const activeMCode of updatedMCodes) {
+            if (activeMCode.modalGroup === mCode.modalGroup) {
+              updatedMCodes.delete(activeMCode);
+            }
+          }
+        }
+
+        updatedMCodes.add(mCode);
+      }
+
+      return {
+        ...state,
+        activeGCodes: updatedGCodes,
+        activeMCodes: updatedMCodes,
+      };
+    });
   }
 }

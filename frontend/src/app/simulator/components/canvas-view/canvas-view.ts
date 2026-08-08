@@ -33,7 +33,7 @@ export class CanvasView {
     }
 
     return {
-      x: target.x ,
+      x: target.x,
       z: target.z,
     };
   });
@@ -57,6 +57,14 @@ export class CanvasView {
 
   readonly feed = computed(() => {
     return this.simulation.machineState().feed;
+  });
+
+  readonly activeGcodes = computed(() => {
+    return this.simulation.machineState().activeGCodes;
+  });
+
+  readonly activeMcodes = computed(() => {
+    return this.simulation.machineState().activeMCodes;
   });
 
   private readonly canvasRef = viewChild.required<ElementRef<HTMLCanvasElement>>('cncCanvas');

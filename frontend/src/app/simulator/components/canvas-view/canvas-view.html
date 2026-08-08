@@ -65,9 +65,9 @@
         <span>Active G codes</span>
 
         <div class="code-values">
-          <strong>G00</strong>
-          <strong>G90</strong>
-          <strong>G95</strong>
+          @for (activeGcode of activeGcodes();track activeGcode.gCode){
+          <strong>{{activeGcode.gCode}}</strong>
+          }
         </div>
       </article>
 
@@ -75,8 +75,9 @@
         <span>Active M codes</span>
 
         <div class="code-values">
-          <strong>M03</strong>
-          <strong>M08</strong>
+          @for (activeMcode of activeMcodes();track activeMcode.mCode){
+          <strong>{{activeMcode.mCode}}</strong>
+          }
         </div>
       </article>
 
